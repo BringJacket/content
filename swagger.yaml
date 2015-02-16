@@ -387,6 +387,7 @@ definitions:
           coordinates:
             $ref: "#/definitions/Coordinate"
       - title: Multiple points
+        description: Use LineString for connected points (ie. a journey) and MultiPoint for a collection of individual places
         type: object
         required:
           - type
@@ -419,7 +420,6 @@ definitions:
       trip_id:
         description: The id of the trip this post is associated with
         type: integer
-        default: null
         minimum: 1
   StoredPost:
     description: The details of a post as stored
@@ -527,7 +527,7 @@ definitions:
       developerMessage:
         description: |
           English text designed to give developers a greater clue as to what went wrong.
-          This should never, ever (no really) be shown to users or even parsed to trigger events,
+          This should never, ever (no really) be shown to users or parsed to trigger events,
           its content should be considered permanently unstable.
         type: string
       details:
