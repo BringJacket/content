@@ -371,23 +371,36 @@ definitions:
         format: date-time
   Geometry:
     description: "The places in the world this post represents, uses a subset of GeoJSON"
-    type: object
-    required:
-      - type
-      - coordinates
-    additionalProperties: false
-    properties:
-      type:
-        description: One of the supported GeoJSON geometry types
-        enum:
-          - Point
-          - LineString
-          - MultiPoint
-        type: string
-      coordinates:
-        oneOf:
-          - $ref: "#/definitions/Coordinate"
-          - type: array
+    oneOf:
+      - title: Single point
+        type: object
+        required:
+          - type
+          - coordinates
+        additionalProperties: false
+        properties:
+          type:
+            description: One of the supported GeoJSON geometry types
+            enum:
+              - Point
+            type: string
+          coordinates:
+            $ref: "#/definitions/Coordinate"
+      - title: Multiple points
+        type: object
+        required:
+          - type
+          - coordinates
+        additionalProperties: false
+        properties:
+          type:
+            description: One of the supported GeoJSON geometry types
+            enum:
+              - LineString
+              - MultiPoint
+            type: string
+          coordinates:
+            type: array
             items:
               $ref: "#/definitions/Coordinate"
   PostDetails:
