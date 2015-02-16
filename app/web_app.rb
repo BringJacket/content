@@ -11,6 +11,7 @@ puts "Using swagger-sinatra v#{Sinatra::Swagger::VERSION}"
 
 module Travel
   class WebApp < Sinatra::Base
+    include GeoUtils
     register Sinatra::Swagger::SpecEnforcer unless production?
     register Sinatra::Swagger::ParamValidator
     swagger "swagger.yaml"
@@ -32,11 +33,6 @@ module Travel
           links: links
         }
       end
-
-      def sorted_geometry_from_params
-        params[:body]['geometry']['coordinates'].sort_by! { |c| Time.parse(c[2]) } if params[:body]['geometry'] && params[:body]['geometry']['type'] == 'LineString'
-        params[:body]['geometry']
-      end
     end
 
     get "/posts", provides: :json do
@@ -45,11 +41,12 @@ module Travel
 
     post "/posts", provides: :json do
       halt(404) unless params[:body]['trip_id'].nil? || Trip.exists?(params[:body]['trip_id'])
+      sort_geometry!(params[:body]['geometry'])
       post = Post.create(
         user_id: 1,
+        trip_id: params[:body]['trip_id'],
         title: params[:body]['title'],
-        geometry: sorted_geometry_from_params,
-        trip_id: params[:body]['trip_id']
+        geometry: params[:body]['geometry']
       )
       halt(201, post.to_json)
     end
@@ -59,12 +56,12 @@ module Travel
     end
 
     post "/trips", provides: :json do
+      sort_geometry!(params[:body]['geometry'])
       trip = Trip.create(
         user_id: 1,
         title: params[:body]['title'],
-        geometry: sorted_geometry_from_params
+        geometry: params[:body]['geometry']
       )
-      puts trip.to_json
       halt(201, trip.to_json)
     end
   end

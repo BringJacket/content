@@ -11,8 +11,26 @@ module Travel
   end
 
   class Trip < ActiveRecord::Base
+    include GeoUtils
     has_many :posts
-    serialize :trip
+    serialize :geometry
+
+    def geometry
+      coordinates = []
+      unless new_record?
+        posts.select(:geometry).each do |post|
+          coordinates.push(*[*post[:geometry]["coordinates"]])
+        end
+      end
+
+      trip_geom = read_attribute(:geometry)
+      coordinates.push(*[*trip_geom["coordinates"]]) if trip_geom
+      
+      sort_geometry!(
+        "type" => "LineString",
+        "coordinates" => coordinates
+      )
+    end
 
     def as_json(options = {})
       super(options).reject { |k, v| v.nil? }

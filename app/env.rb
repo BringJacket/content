@@ -5,6 +5,7 @@ begin
   Dotenv.load
 rescue LoadError; end
 
+require_relative "geo_json"
 require_relative "models"
 
 module Travel
