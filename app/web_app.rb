@@ -34,7 +34,7 @@ module Travel
       end
 
       def sorted_geometry_from_params
-        params[:body]['geometry']['coordinates'].sort_by! { |c| Time.parse(c[2]) } if params[:body]['geometry']['type'] == 'LineString'
+        params[:body]['geometry']['coordinates'].sort_by! { |c| Time.parse(c[2]) } if params[:body]['geometry'] && params[:body]['geometry']['type'] == 'LineString'
         params[:body]['geometry']
       end
     end
@@ -44,12 +44,14 @@ module Travel
     end
 
     post "/posts", provides: :json do
-      Post.create(
+      halt(404) unless params[:body]['trip_id'].nil? || Trip.exists?(params[:body]['trip_id'])
+      post = Post.create(
         user_id: 1,
         title: params[:body]['title'],
-        geometry: sorted_geometry_from_params
+        geometry: sorted_geometry_from_params,
+        trip_id: params[:body]['trip_id']
       )
-      halt(201)
+      halt(201, post.to_json)
     end
 
     get "/trips", provides: :json do
@@ -57,12 +59,13 @@ module Travel
     end
 
     post "/trips", provides: :json do
-      Trip.create(
+      trip = Trip.create(
         user_id: 1,
         title: params[:body]['title'],
         geometry: sorted_geometry_from_params
       )
-      halt(201)
+      puts trip.to_json
+      halt(201, trip.to_json)
     end
   end
 end

@@ -13,5 +13,9 @@ module Travel
   class Trip < ActiveRecord::Base
     has_many :posts
     serialize :trip
+
+    def as_json(options = {})
+      super(options).reject { |k, v| v.nil? }
+    end
   end
 end

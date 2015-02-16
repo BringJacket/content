@@ -55,6 +55,8 @@ paths:
       responses:
         201:
           description: A new post has been created
+          schema:
+            $ref: "#/definitions/StoredPost"
         400:
           description: An invalid parameter was given
           schema:
@@ -63,6 +65,12 @@ paths:
           description: No or invalid authentication details given
           schema:
             $ref: "#/definitions/Error"
+        403:
+          description: The authenticated user does not have the rights to interact with the given Trip
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: The referenced Trip does not exist
   /posts/{post_id}:
     get:
       summary: Retrieve details of a specific post
@@ -116,9 +124,11 @@ paths:
           schema:
             $ref: "#/definitions/Error"
         403:
-          description: The authenticated user is not permitted to edit the specified post
+          description: "The authenticated user is not permitted to edit the specified post, or the user does not have rights to access the given Trip"
           schema:
             $ref: "#/definitions/Error"
+        404:
+          description: The referenced Post or Trip does not exist
     delete:
       summary: Permanently remove an existing post from all systems
       parameters:
@@ -190,6 +200,8 @@ paths:
       responses:
         201:
           description: A new trip has been created
+          schema:
+            $ref: "#/definitions/StoredTrip"
         400:
           description: An invalid parameter was given
           schema:
@@ -426,6 +438,8 @@ definitions:
         required:
           - id
           - user_id
+          - created_at
+          - updated_at
         properties:
           id:
             description: The post's id
@@ -435,6 +449,14 @@ definitions:
             description: The author's user id
             type: integer
             minimum: 1
+          created_at:
+            description: The date-time at which this post was created
+            type: string
+            format: date-time
+          updated_at:
+            description: The date-time at which this post was most recently updated
+            type: string
+            format: date-time
   PostList:
     description: A list of posts
     type: object
@@ -455,7 +477,6 @@ definitions:
     type: object
     required:
       - title
-    additionalProperties: false
     properties:
       title:
         description: The title of the trip
@@ -473,6 +494,8 @@ definitions:
         required:
           - id
           - user_id
+          - created_at
+          - updated_at
         properties:
           id:
             description: The trip's id
@@ -482,6 +505,14 @@ definitions:
             description: The author's user id
             type: integer
             minimum: 1
+          created_at:
+            description: The date-time at which this post was created
+            type: string
+            format: date-time
+          updated_at:
+            description: The date-time at which this post was most recently updated
+            type: string
+            format: date-time
   TripList:
     description: A list of trips
     type: object
