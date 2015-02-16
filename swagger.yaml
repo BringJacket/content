@@ -380,14 +380,12 @@ definitions:
         additionalProperties: false
         properties:
           type:
-            description: One of the supported GeoJSON geometry types
             enum:
               - Point
             type: string
           coordinates:
             $ref: "#/definitions/Coordinate"
-      - title: Multiple points
-        description: Use LineString for connected points (ie. a journey) and MultiPoint for a collection of individual places
+      - title: A sequence of points
         type: object
         required:
           - type
@@ -395,10 +393,8 @@ definitions:
         additionalProperties: false
         properties:
           type:
-            description: One of the supported GeoJSON geometry types
             enum:
               - LineString
-              - MultiPoint
             type: string
           coordinates:
             type: array

@@ -3,6 +3,7 @@ $LOAD_PATH.unshift("../../sinatra-swagger/lib")
 require "sinatra/swagger"
 require "zlib"
 require "json"
+require "time"
 
 require_relative "env"
 
@@ -31,6 +32,11 @@ module Travel
           links: links
         }
       end
+
+      def sorted_geometry_from_params
+        params[:body]['geometry']['coordinates'].sort_by! { |c| Time.parse(c[2]) } if params[:body]['geometry']['type'] == 'LineString'
+        params[:body]['geometry']
+      end
     end
 
     get "/posts", provides: :json do
@@ -40,7 +46,8 @@ module Travel
     post "/posts", provides: :json do
       Post.create(
         user_id: 1,
-        title: params[:body]['title']
+        title: params[:body]['title'],
+        geometry: sorted_geometry_from_params
       )
       halt(201)
     end
@@ -52,7 +59,8 @@ module Travel
     post "/trips", provides: :json do
       Trip.create(
         user_id: 1,
-        title: params[:body]['title']
+        title: params[:body]['title'],
+        geometry: sorted_geometry_from_params
       )
       halt(201)
     end

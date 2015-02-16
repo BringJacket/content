@@ -3,6 +3,9 @@ class CreateTrips < ActiveRecord::Migration
     create_table :trips do |table|
       table.integer :user_id, null: false
       table.string  :title, null: false
+      table.text    :geometry, null: false
+
+      table.timestamps null: false
     end
   end
 end
