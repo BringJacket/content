@@ -465,6 +465,9 @@ definitions:
         description: The title of the trip
         type: string
         maxLength: 255
+      geometry:
+        description: Points the trip covers. These will be added to the points attached to posts associated with this trip
+        $ref: "#/definitions/Geometry"
   StoredTrip:
     description: The details of a trip as stored
     allOf:
