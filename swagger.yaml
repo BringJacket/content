@@ -1,0 +1,522 @@
+---
+swagger: "2.0"
+info:
+  title: Content Service
+  description: Stores and manages the stories users want to share with the world.
+  version: 0.1.0
+basePath: /
+produces:
+  - application/vnd.byjp.travel.post+json
+  - application/vnd.byjp.travel.trip+json
+paths:
+  /posts:
+    get:
+      summary: List all posts (stories and photos) optionally filtered by specific attributes
+      parameters:
+        - name: user_id
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: Only show posts from a specific user
+        - name: limit
+          in: query
+          type: integer
+          minimum: 1
+          default: 15
+          required: false
+          description: Limit the number of results per page
+      responses:
+        200:
+          description: A list of posts matching the given filters
+          schema:
+            $ref: "#/definitions/PostList"
+        400:
+          description: An invalid parameter was given
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: The given user id could not be found
+          schema:
+            $ref: "#/definitions/Error"
+    post:
+      summary: Create a new post
+      parameters:
+        - name: post
+          in: body
+          description: The details of the post to be created
+          required: true
+          schema:
+            $ref: "#/definitions/PostDetails"
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+      responses:
+        201:
+          description: A new post has been created
+        400:
+          description: An invalid parameter was given
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: No or invalid authentication details given
+          schema:
+            $ref: "#/definitions/Error"
+  /posts/{post_id}:
+    get:
+      summary: Retrieve details of a specific post
+      parameters:
+        - name: post_id
+          in: path
+          type: integer
+          minimum: 1
+          required: true
+          description: The id of the post desired
+      responses:
+        200:
+          description: The requested post's details
+          schema:
+            $ref: "#/definitions/StoredPost"
+        400:
+          description: An invalid parameter was given
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: No post with that id exists
+    patch:
+      summary: Make alterations to an existing post
+      parameters:
+        - name: post_id
+          in: path
+          type: integer
+          minimum: 1
+          required: true
+          description: The id of the post desired
+        - name: body
+          in: body
+          description: The details of the post to be created
+          schema:
+            $ref: "#/definitions/PostDetails"
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+      responses:
+        200:
+          description: The given post has been updated
+          schema:
+            $ref: "#/definitions/StoredPost"
+        400:
+          description: The given data is of the wrong format
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: No or invalid authentication details given
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: The authenticated user is not permitted to edit the specified post
+          schema:
+            $ref: "#/definitions/Error"
+    delete:
+      summary: Permanently remove an existing post from all systems
+      parameters:
+        - name: post_id
+          in: path
+          type: integer
+          minimum: 1
+          required: true
+          description: The id of the post desired
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+      responses:
+        204:
+          description: The post has been deleted
+        400:
+          description: The given Post id is not valid
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: No or invalid authentication details given
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: The authenticated user is not permitted to delete the specified post
+          schema:
+            $ref: "#/definitions/Error"
+  /trips:
+    get:
+      summary: List all trips optionally filtered by specific attributes
+      parameters:
+        - name: user_id
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: Only show trips from a specific user
+        - name: limit
+          in: query
+          type: integer
+          minimum: 1
+          default: 15
+          required: false
+          description: Limit the number of results per page
+      responses:
+        200:
+          description: A list of all trips matching the given filters
+          schema:
+            $ref: "#/definitions/TripList"
+        400:
+          description: An invalid parameter was given
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: The given user id could not be found
+    post:
+      summary: Create a new trip
+      parameters:
+        - name: trip
+          in: body
+          description: The details of the trip to be created
+          schema:
+            $ref: "#/definitions/TripDetails"
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+      responses:
+        201:
+          description: A new trip has been created
+        400:
+          description: An invalid parameter was given
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: No or invalid authentication details given
+          schema:
+            $ref: "#/definitions/Error"
+  /trips/{trip_id}:
+    get:
+      summary: "Retrieve details of a specific trip, including all associated posts"
+      parameters:
+        - name: trip_id
+          in: path
+          type: integer
+          minimum: 1
+          required: true
+          description: The id of the trip desired
+      responses:
+        200:
+          description: The requested trip's details
+          schema:
+            $ref: "#/definitions/StoredTrip"
+        400:
+          description: An invalid parameter was given
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: No trip with that id exists
+    patch:
+      parameters:
+        - name: trip_id
+          in: path
+          type: integer
+          minimum: 1
+          required: true
+          description: The id of the trip desired
+        - name: trip
+          in: body
+          description: The details of the journey to be created
+          schema:
+            $ref: "#/definitions/TripDetails"
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+      responses:
+        200:
+          description: The given trip has been updated
+          schema:
+            $ref: "#/definitions/StoredTrip"
+        400:
+          description: The given data is of the wrong format
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: No or invalid authentication details given
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: The authenticated user is not permitted to edit the specified trip
+          schema:
+            $ref: "#/definitions/Error"
+    delete:
+      summary: Permanently remove an existing trip from all systems
+      parameters:
+        - name: trip_id
+          in: path
+          type: integer
+          minimum: 1
+          required: true
+          description: The id of the trip desired
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+      responses:
+        204:
+          description: The trip has been deleted
+        400:
+          description: The given trip id is not valid
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: No or invalid authentication details given
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: The authenticated user is not permitted to delete the specified trip
+          schema:
+            $ref: "#/definitions/Error"
+  /trips/{trip_id}/posts/{post_id}:
+    put:
+      summary: Associate a post with a trip. Will overwrite any previous association with a trip
+      parameters:
+        - name: trip_id
+          in: path
+          type: integer
+          minimum: 1
+          required: true
+          description: The id of the trip to be assocaited with
+        - name: post_id
+          in: path
+          type: integer
+          minimum: 1
+          required: true
+          description: The id of the post being associated
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+      responses:
+        201:
+          description: The specified post has been attached to the given trip
+        400:
+          description: "The given trip id, the given Post id or both are not valid"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: No or invalid authentication details given
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: The authenticated user is not permitted to make this association
+          schema:
+            $ref: "#/definitions/Error"
+    delete:
+      summary: Disassociate a post from this (and by consequence any) trip
+      parameters:
+        - name: trip_id
+          in: path
+          type: integer
+          minimum: 1
+          required: true
+          description: The id of the trip to be assocaited with
+        - name: post_id
+          in: path
+          type: integer
+          minimum: 1
+          required: true
+          description: The id of the post being associated
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+      responses:
+        204:
+          description: The specified post has been removed from the given trip
+        400:
+          description: "The given trip id, the given Post id or both are not valid"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: No or invalid authentication details given
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: The authenticated user is not permitted to delete the specified association
+          schema:
+            $ref: "#/definitions/Error"
+
+definitions:
+  Coordinate:
+    description: "A GeoJSON-esque coordinate for a geometry. Longitude, Latitude, time. Note long/lat are reversed, as with GeoJSON."
+    type: array
+    minItems: 3
+    maxItems: 3
+    additionalItems: false
+    items:
+      - title: Longitude
+        description: Decimal degrees North (+) or South (-) of the equator
+        type: number
+      - title: Latitude
+        description: Decimal degrees East (-) or West (+) of the prime meridian
+        type: number
+      - title: Time
+        description: ISO-8601 timestamp for this event. Use zulu time (UTC) in the form YYYY-MM-DD'T'HH:mm:ss.sss'Z'
+        type: string
+        format: date-time
+  Geometry:
+    description: "The places in the world this post represents, uses a subset of GeoJSON"
+    type: object
+    required:
+      - type
+      - coordinates
+    additionalProperties: false
+    properties:
+      type:
+        description: One of the supported GeoJSON geometry types
+        enum:
+          - Point
+          - LineString
+          - MultiPoint
+        type: string
+      coordinates:
+        oneOf:
+          - $ref: "#/definitions/Coordinate"
+          - type: array
+            items:
+              $ref: "#/definitions/Coordinate"
+  PostDetails:
+    description: The details needed for creating a new post
+    type: object
+    required:
+      - title
+      - geometry
+    properties:
+      title:
+        description: The title of the post
+        type: string
+        maxLength: 255
+      geometry:
+        $ref: "#/definitions/Geometry"
+      trip_id:
+        description: The id of the trip this post is associated with
+        type: integer
+        default: null
+        minimum: 1
+  StoredPost:
+    description: The details of a post as stored
+    allOf:
+      - $ref: "#/definitions/PostDetails"
+      - description: Additional server-generated properties of a post
+        type: object
+        required:
+          - id
+          - user_id
+        properties:
+          id:
+            description: The post's id
+            type: integer
+            minimum: 1
+          user_id:
+            description: The author's user id
+            type: integer
+            minimum: 1
+  PostList:
+    description: A list of posts
+    type: object
+    required:
+      - items
+      - links
+    additionalProperties: false
+    properties:
+      items:
+        description: An array of post items
+        type: array
+        items:
+          $ref: "#/definitions/StoredPost"
+      links:
+        $ref: "#/definitions/ListLinks"
+  TripDetails:
+    description: A travel trip; these are associated with multiple stories and images from a trip
+    type: object
+    required:
+      - title
+    additionalProperties: false
+    properties:
+      title:
+        description: The title of the trip
+        type: string
+        maxLength: 255
+  StoredTrip:
+    description: The details of a trip as stored
+    allOf:
+      - $ref: "#/definitions/TripDetails"
+      - description: Additional server-generated properties of a trip
+        type: object
+        required:
+          - id
+          - user_id
+        properties:
+          id:
+            description: The trip's id
+            type: integer
+            minimum: 1
+          user_id:
+            description: The author's user id
+            type: integer
+            minimum: 1
+  TripList:
+    description: A list of trips
+    type: object
+    required:
+      - items
+      - links
+    additionalProperties: false
+    properties:
+      items:
+        description: An array of trip items
+        type: array
+        items:
+          $ref: "#/definitions/StoredTrip"
+      links:
+        $ref: "#/definitions/ListLinks"
+  ListLinks:
+    description: An object detailing links to other lists
+    type: object
+    properties:
+      next:
+        description: The next page of items in the list (Will not be present on last page)
+        type: string
+        format: url
+      prev:
+        description: The previous page of items in the list (Will not be present on first page)
+        type: string
+        format: url
+    additionalProperties:
+      type: string
+      format: url
+  Error:
+    description: An error document explaining why the request failed.
+    type: object
+    required:
+      - error
+      - developerMessage
+    additionalProperties: true
+    properties:
+      error:
+        description: An error code which can be used for triggering user interaction events
+        type: string
+      developerMessage:
+        description: |
+          English text designed to give developers a greater clue as to what went wrong.
+          This should never, ever (no really) be shown to users or even parsed to trigger events,
+          its content should be considered permanently unstable.
+        type: string
+      details:
+        description: An object containing various useful machine readable specifics of the error.
+        type: object
