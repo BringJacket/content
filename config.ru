@@ -1,3 +1,3 @@
-require File.join(File.dirname(__FILE__), 'app/web_app.rb')
+require File.join(File.dirname(__FILE__), 'app/webapp.rb')
 
 run Travel::WebApp

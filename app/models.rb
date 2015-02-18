@@ -1,7 +1,8 @@
-require "json"
+require "elasticsearch/model"
 
 module Travel
   class Post < ActiveRecord::Base
+    include Elasticsearch::Model
     has_one :trip
     serialize :geometry
 
@@ -11,6 +12,7 @@ module Travel
   end
 
   class Trip < ActiveRecord::Base
+    include Elasticsearch::Model
     include GeoUtils
     has_many :posts
     serialize :geometry

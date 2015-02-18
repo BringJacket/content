@@ -6,8 +6,9 @@ info:
   version: 0.1.0
 basePath: /
 produces:
-  - application/vnd.byjp.travel.post+json
-  - application/vnd.byjp.travel.trip+json
+  - application/vnd.byjp.travel.post.v1+json
+  - application/vnd.byjp.travel.trip.v1+json
+  - application/vnd.byjp.travel.list.v1+json
 paths:
   /posts:
     get:
@@ -41,6 +42,8 @@ paths:
             $ref: "#/definitions/Error"
     post:
       summary: Create a new post
+      consumes:
+        - application/json
       parameters:
         - name: post
           in: body
@@ -94,6 +97,8 @@ paths:
           description: No post with that id exists
     patch:
       summary: Make alterations to an existing post
+      consumes:
+        - application/json
       parameters:
         - name: post_id
           in: path
@@ -187,6 +192,8 @@ paths:
           description: The given user id could not be found
     post:
       summary: Create a new trip
+      consumes:
+        - application/json
       parameters:
         - name: trip
           in: body
@@ -232,6 +239,9 @@ paths:
         404:
           description: No trip with that id exists
     patch:
+      summary: Allows the alteration of details of a trip
+      consumes:
+        - application/json
       parameters:
         - name: trip_id
           in: path
@@ -293,76 +303,6 @@ paths:
           description: The authenticated user is not permitted to delete the specified trip
           schema:
             $ref: "#/definitions/Error"
-  /trips/{trip_id}/posts/{post_id}:
-    put:
-      summary: Associate a post with a trip. Will overwrite any previous association with a trip
-      parameters:
-        - name: trip_id
-          in: path
-          type: integer
-          minimum: 1
-          required: true
-          description: The id of the trip to be assocaited with
-        - name: post_id
-          in: path
-          type: integer
-          minimum: 1
-          required: true
-          description: The id of the post being associated
-        - in: header
-          name: Authorization
-          type: string
-          required: true
-      responses:
-        201:
-          description: The specified post has been attached to the given trip
-        400:
-          description: "The given trip id, the given Post id or both are not valid"
-          schema:
-            $ref: "#/definitions/Error"
-        401:
-          description: No or invalid authentication details given
-          schema:
-            $ref: "#/definitions/Error"
-        403:
-          description: The authenticated user is not permitted to make this association
-          schema:
-            $ref: "#/definitions/Error"
-    delete:
-      summary: Disassociate a post from this (and by consequence any) trip
-      parameters:
-        - name: trip_id
-          in: path
-          type: integer
-          minimum: 1
-          required: true
-          description: The id of the trip to be assocaited with
-        - name: post_id
-          in: path
-          type: integer
-          minimum: 1
-          required: true
-          description: The id of the post being associated
-        - in: header
-          name: Authorization
-          type: string
-          required: true
-      responses:
-        204:
-          description: The specified post has been removed from the given trip
-        400:
-          description: "The given trip id, the given Post id or both are not valid"
-          schema:
-            $ref: "#/definitions/Error"
-        401:
-          description: No or invalid authentication details given
-          schema:
-            $ref: "#/definitions/Error"
-        403:
-          description: The authenticated user is not permitted to delete the specified association
-          schema:
-            $ref: "#/definitions/Error"
-
 definitions:
   Coordinate:
     description: "A GeoJSON-esque coordinate for a geometry. Longitude, Latitude, time. Note long/lat are reversed, as with GeoJSON."
