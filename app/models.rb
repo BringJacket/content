@@ -3,12 +3,23 @@ require "elasticsearch/model"
 module Travel
   class Post < ActiveRecord::Base
     include Elasticsearch::Model
-    has_one :trip
+    has_one   :trip
     serialize :geometry
+    validates :title, presence: true
+    validates :geometry, presence: true
+    validate  :has_some_content
 
     def as_json(options = {})
       super(options).reject { |k, v| v.nil? }
     end
+
+    private
+
+    def has_some_content
+      if [self.photo, self.body].reject(&:blank?).empty?
+        errors[:base] << "A post must include a body, a photo or both."
+      end
+    end  
   end
 
   class Trip < ActiveRecord::Base

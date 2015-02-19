@@ -10,11 +10,15 @@ module Travel
     post "/posts", provides: :post do
       halt(404) unless params[:body]['trip_id'].nil? || Trip.exists?(params[:body]['trip_id'])
       sort_geometry!(params[:body]['geometry'])
+      # TODO: ensure Photo URI is acceptable
+
       post = Post.create(
         user_id: 1,
         trip_id: params[:body]['trip_id'],
         title: params[:body]['title'],
-        geometry: params[:body]['geometry']
+        geometry: params[:body]['geometry'],
+        body: params[:body]['body'],
+        photo: params[:body]['photo']
       )
       halt(201, post.to_json)
     end

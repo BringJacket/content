@@ -5,6 +5,8 @@ class CreatePosts < ActiveRecord::Migration
       table.string  :title, null: false
       table.integer :trip_id, null: true
       table.text    :geometry, null: false
+      table.text    :body, null: true
+      table.string  :photo, null: true
 
       table.timestamps null: false
     end

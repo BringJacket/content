@@ -9,8 +9,6 @@ module Travel
       mime_type :post, 'application/vnd.byjp.travel.post.v1+json'
       mime_type :trip, 'application/vnd.byjp.travel.trip.v1+json'
       mime_type :list, 'application/vnd.byjp.travel.list.v1+json'
-      # mime_type :post_list, 'application/vnd.byjp.travel.post-list.v1+json'
-      # mime_type :trip_list, 'application/vnd.byjp.travel.trip-list.v1+json'
     end
 
     helpers do
@@ -30,6 +28,10 @@ module Travel
           links: links
         }
       end
+    end
+
+    after do
+      headers['Access-Control-Allow-Origin'] = '*'
     end
   end
 end

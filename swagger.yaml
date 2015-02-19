@@ -354,21 +354,38 @@ definitions:
               $ref: "#/definitions/Coordinate"
   PostDetails:
     description: The details needed for creating a new post
-    type: object
-    required:
-      - title
-      - geometry
-    properties:
-      title:
-        description: The title of the post
-        type: string
-        maxLength: 255
-      geometry:
-        $ref: "#/definitions/Geometry"
-      trip_id:
-        description: The id of the trip this post is associated with
-        type: integer
-        minimum: 1
+    allOf:
+      - type: object
+        required:
+          - title
+          - geometry
+        properties:
+          title:
+            description: The title of the post
+            type: string
+            maxLength: 255
+          geometry:
+            $ref: "#/definitions/Geometry"
+          trip_id:
+            description: The id of the trip this post is associated with
+            type: integer
+            minimum: 1
+      - oneOf:
+        - type: object
+          required:
+            - photo
+          properties:
+            photo:
+              description: The URI for the photo post
+              type: string
+              format: uri
+        - type: object
+          required:
+            - body
+          properties:
+            body:
+              description: Body text for a story post, or a description for a photo post
+              type: string
   StoredPost:
     description: The details of a post as stored
     allOf:
