@@ -3,11 +3,11 @@ module Travel
 
     ## Trips
 
-    get "/trips", provides: :list do
+    get "/trips", provides: :json do
       list_from_params_for(Trip).to_json
     end
 
-    post "/trips", provides: :trip do
+    post "/trips", provides: :json do
       sort_geometry!(params[:body]['geometry'])
       trip = Trip.create(
         user_id: 1,
@@ -17,7 +17,7 @@ module Travel
       halt(201, trip.to_json)
     end
 
-    get "/trips/*", provides: :trip do
+    get "/trips/*", provides: :json do
       begin
         halt(200, Trip.find(params['trip_id']).to_json)
       rescue ActiveRecord::RecordNotFound

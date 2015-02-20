@@ -3,11 +3,11 @@ module Travel
 
     ## Posts
 
-    get "/posts", provides: :list do
+    get "/posts", provides: :json do
       list_from_params_for(Post).to_json
     end
 
-    post "/posts", provides: :post do
+    post "/posts", provides: :json do
       halt(404) unless params[:body]['trip_id'].nil? || Trip.exists?(params[:body]['trip_id'])
       sort_geometry!(params[:body]['geometry'])
       # TODO: ensure Photo URI is acceptable
@@ -23,7 +23,7 @@ module Travel
       halt(201, post.to_json)
     end
 
-    get "/posts/*", provides: :post do
+    get "/posts/*", provides: :json do
       begin
         halt(200, Post.find(params['post_id']).to_json)
       rescue ActiveRecord::RecordNotFound
