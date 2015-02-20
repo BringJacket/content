@@ -1,5 +1,4 @@
 require "rake"
-require "rspec/core/rake_task"
 
 task :default => :build
 task :build => :test
