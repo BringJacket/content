@@ -4,13 +4,13 @@ module Travel
     ## Trips
 
     get "/trips", provides: :json do
-      list_from_params_for(Trip).to_json
+      list_from_params_for(Trip.order(updated_at: :desc)).to_json
     end
 
     post "/trips", provides: :json do
       sort_geometry!(params[:body]['geometry'])
       trip = Trip.create(
-        user_id: 1,
+        user: "jphastings",
         title: params[:body]['title'],
         geometry: params[:body]['geometry']
       )

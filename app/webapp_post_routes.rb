@@ -4,7 +4,7 @@ module Travel
     ## Posts
 
     get "/posts", provides: :json do
-      list_from_params_for(Post).to_json
+      list_from_params_for(Post.order(updated_at: :desc)).to_json
     end
 
     post "/posts", provides: :json do
@@ -13,7 +13,7 @@ module Travel
       # TODO: ensure Photo URI is acceptable
 
       post = Post.create(
-        user_id: 1,
+        user: "jphastings",
         trip_id: params[:body]['trip_id'],
         title: params[:body]['title'],
         geometry: params[:body]['geometry'],
