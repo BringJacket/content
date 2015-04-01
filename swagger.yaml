@@ -377,13 +377,18 @@ definitions:
               description: The URI for the photo post
               type: string
               format: uri
+            body:
+              description: Body text for the description of the photo post.
+              type: string
+              format: markdown
         - type: object
           required:
             - body
           properties:
             body:
-              description: Body text for a story post, or a description for a photo post
+              description: Body text for a story post.
               type: string
+              format: markdown
   StoredPost:
     description: The details of a post as stored
     allOf:
