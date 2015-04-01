@@ -1,8 +1,7 @@
 module Travel
   class WebApp < Sinatra::Base
     include GeoUtils
-    register Sinatra::Swagger::SpecEnforcer unless production?
-    register Sinatra::Swagger::ParamValidator
+    register Sinatra::Swagger::RecommendedSetup
     swagger "swagger.yaml"
 
     configure do
