@@ -2,7 +2,7 @@ source "https://rubygems.org"
 ruby "2.2.0"
 
 gem "sinatra", "~> 1.4"
-gem "sinatra-swagger", "~> 0.4"
+gem "sinatra-swagger", "~> 0.4", ">= 0.4.1"
 gem "activerecord", "~> 4.2"
 gem "pg", "~> 0.18"
 gem "rake", "~> 10.1"
